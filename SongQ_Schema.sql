@@ -17,9 +17,10 @@ FOREIGN KEY(owner) REFERENCES Users(username));
 CREATE TABLE Requests(
 roomCode VARCHAR(50) NOT NULL,
 owner VARCHAR(50) NOT NULL,
-songName VARCHAR(50) NOT NULL,
+songId VARCHAR(100) NOT NULL,
+songName VARCHAR(100) NOT NULL,
 artists VARCHAR(100) NOT NULL,
-album VARCHAR(50) NOT NULL,
+album VARCHAR(100) NOT NULL,
 serviced BOOLEAN,
 accepted BOOLEAN,
 rejected BOOLEAN);
