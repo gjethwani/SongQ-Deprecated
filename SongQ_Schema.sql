@@ -16,6 +16,7 @@ PRIMARY KEY(roomCode),
 FOREIGN KEY(owner) REFERENCES Users(username));
 
 CREATE TABLE Requests(
+requestId INT NOT NULL AUTO_INCREMENT,
 roomCode VARCHAR(50) NOT NULL,
 owner VARCHAR(50) NOT NULL,
 songId VARCHAR(100) NOT NULL,
@@ -24,4 +25,5 @@ artists VARCHAR(100) NOT NULL,
 album VARCHAR(100) NOT NULL,
 serviced BOOLEAN NOT NULL,
 accepted BOOLEAN,
-rejected BOOLEAN);
+rejected BOOLEAN,
+PRIMARY KEY(requestId));

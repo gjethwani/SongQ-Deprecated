@@ -32,7 +32,7 @@
 				   String roomCode = (String) request.getAttribute(StringConstants.ROOM_CODE);
 				   String owner = db.getOwner(roomCode); 
 				   db.close(); %>
-				xhttp.open("GET", path + "/AddRequest?roomCode=" + '<%= roomCode %>' + "&owner=" + '<%= owner %>' + "&songId=" + id + "&songName=" + name + "&artists=" + artists + "&album=" + album, true); //TODO
+				xhttp.open("GET", path + "/AddRequest?roomCode=" + '<%= roomCode %>' + "&owner=" + '<%= owner %>' + "&songId=" + id + "&songName=" + name + "&artists=" + artists + "&album=" + album, true);
 				xhttp.send();
 			}
 

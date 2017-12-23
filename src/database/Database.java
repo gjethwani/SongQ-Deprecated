@@ -6,6 +6,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import objects.Request;
 
 public class Database {
 	Connection conn;
@@ -86,6 +90,83 @@ public class Database {
 		catch(SQLException e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	public int authenticateHost(String username, String password) {
+		String query = String.format("SELECT %s FROM %s WHERE username='%s'","password", "Users", username);
+		try {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			if (!rs.isBeforeFirst() ) { 
+				return 0; //no user
+			}
+			while (rs.next()) {
+				if (rs.getString("password").equals(password)) {
+					return 1; //successful
+				} else {
+					return -1; //failed
+				}
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			return -2; //error
+		}
+		return -2; //error
+	}
+	
+	public List<String> getRoomCodes(String username) {
+		String query = String.format("SELECT %s FROM %s WHERE owner='%s'","roomCode", "Playlists", username);
+		List<String> roomCodes = new ArrayList<String>();
+		try {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				roomCodes.add(rs.getString("roomCode"));
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return roomCodes;
+	}
+	
+	public List<Request> getOutstandingRequests(String roomCode) {
+		String query = String.format("SELECT * FROM %s WHERE roomCode='%s'", "Requests", roomCode);
+		List<Request> requests = new ArrayList<Request>();
+		try {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				Request request = new Request(); 
+				request.setRequestId(rs.getInt("requestId"));
+				request.setRoomCode(rs.getString("roomCode"));
+				request.setOwner(rs.getString("owner"));
+				request.setSongId(rs.getString("songId"));
+				request.setSongName(rs.getString("songName"));
+				request.setArtists(rs.getString("artists"));
+				request.setAlbum(rs.getString("album"));
+				request.setServiced(rs.getBoolean("serviced"));
+				request.setAccepted(rs.getBoolean("accepted"));
+				request.setRejected(rs.getBoolean("rejected"));
+				requests.add(request);
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return requests;
+	}
+	
+	public void requestServiced(int requestId, String acceptedRejected) {
+		String query = String.format("UPDATE %s SET serviced=true, %s=true WHERE requestId='%s'", "Requests", acceptedRejected, requestId);
+		try {
+			Statement st = conn.createStatement();
+			st.executeUpdate(query);
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
 		}
 	}
 }
