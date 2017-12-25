@@ -11,6 +11,7 @@ PRIMARY KEY (username));
 
 CREATE TABLE Playlists(
 roomCode VARCHAR(50) NOT NULL,
+playListId VARCHAR(100) NOT NULL,
 owner VARCHAR(50) NOT NULL,
 PRIMARY KEY(roomCode),
 FOREIGN KEY(owner) REFERENCES Users(username));

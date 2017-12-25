@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import constants.StringConstants;
 import objects.Request;
 
 public class Database {
@@ -23,7 +24,7 @@ public class Database {
 		rs = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/SongQ?user=root&password=damansara75&useSSL=false");			
+			conn = DriverManager.getConnection(StringConstants.DB_CLOUD);			
 		} catch (SQLException sqle) {
 			System.out.println ("SQLException: " + sqle.getMessage());
 		} catch (ClassNotFoundException cnfe) {
@@ -167,6 +168,52 @@ public class Database {
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void registerUser(String firstName, String lastName, String username, String password) {
+		String query = String.format("INSERT INTO Users VALUES (?,?,?,?)");
+		try {
+			PreparedStatement st = conn.prepareStatement(query);
+			st.setString(1, firstName);
+			st.setString(2, lastName);
+			st.setString(3, username);
+			st.setString(4, password);
+			st.executeUpdate();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void createRoomCode(String roomCode, String playlistName, String owner) {
+		String query = String.format("INSERT INTO Playlists VALUES (?,?,?)");
+		try {
+			PreparedStatement st = conn.prepareStatement(query);
+			st.setString(1, roomCode);
+			st.setString(2, playlistName);
+			st.setString(3, owner);
+			st.executeUpdate();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean roomCodeExists(String roomCode) {
+		String query = String.format("SELECT * FROM %s WHERE roomCode='%s'", "Playlists", roomCode);
+		try {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			if (!rs.isBeforeFirst() ) { 
+				return false; //no user
+			} else {
+				return true;
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			return true;
 		}
 	}
 }
