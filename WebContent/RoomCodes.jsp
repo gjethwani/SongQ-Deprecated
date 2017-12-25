@@ -6,7 +6,8 @@
 <% 
    String username = (String) request.getSession().getAttribute("username");
    Database db = new Database();
-   List<String> roomCodes = db.getRoomCodes(username); %>
+   List<String> roomCodes = db.getRoomCodes(username);
+   int roomCodesIndex = 0;%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -23,25 +24,25 @@
 	<script>
 		var roomCodesDiv = document.getElementById("roomCodes");
 		var noOfRoomCodes = <%= roomCodes.size() %>;
-		<% int roomCodesIndex = 0; %>
 		<% if (roomCodes.size() == 0) { %>
+			console.log("here1");
 			roomCodesDiv.appendChild(document.createTextNode("No Room Codes"));
-		<% } else {%>
-			for (var i = 0; i < noOfRoomCodes; i++) {
+		<% } else { 
+			for (int i = 0; i < roomCodes.size(); i++) { %>
 				var aRoomCodes = document.createElement("a");
 				aRoomCodes.href = "<%= StringConstants.URI %>/Requests.jsp?roomCode=" + "<%= roomCodes.get(roomCodesIndex) %>";
 				var textRoomCodes = document.createTextNode("<%= roomCodes.get(roomCodesIndex) %>");
-				<% roomCodesIndex++; %>
+				<% roomCodesIndex += 1; %>
 				aRoomCodes.appendChild(textRoomCodes);
 				roomCodesDiv.appendChild(aRoomCodes);
-			}
-		<% } %>
+				roomCodesDiv.appendChild(document.createElement("br"));
+		<%	}
+		} %>
 		function createRoomCode() {
-			console.log("hello");
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
-					
+					window.location.href = path + "/RoomCodes.jsp";
 				}
 			};
 			var path = "/"+window.location.pathname.split("/")[1];

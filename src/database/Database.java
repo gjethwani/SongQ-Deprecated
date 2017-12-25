@@ -186,12 +186,12 @@ public class Database {
 		}
 	}
 	
-	public void createRoomCode(String roomCode, String playlistName, String owner) {
+	public void createRoomCode(String roomCode, String playlistId, String owner) {
 		String query = String.format("INSERT INTO Playlists VALUES (?,?,?)");
 		try {
 			PreparedStatement st = conn.prepareStatement(query);
 			st.setString(1, roomCode);
-			st.setString(2, playlistName);
+			st.setString(2, playlistId);
 			st.setString(3, owner);
 			st.executeUpdate();
 		}
@@ -215,5 +215,20 @@ public class Database {
 			e.printStackTrace();
 			return true;
 		}
+	}
+	
+	public String getPlaylistId(String roomCode) {
+		String query = String.format("SELECT %s FROM %s WHERE roomCode='%s'", "playlistId", "Playlists", roomCode);
+		try {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				return rs.getString("playlistId");
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return "null";
 	}
 }

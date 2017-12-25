@@ -50,17 +50,19 @@ public class AuthenticateSpotifyRedirect extends HttpServlet {
 		    /* Set the access token and refresh token so that they are used whenever needed */
 		    api.setAccessToken(authorizationCodeCredentials.getAccessToken());
 		    api.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
-		    try {
+		  //  try {
 	    			request.getSession().setAttribute("api",api);
-	    			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/AuthenticateHost?redirect=SpotifyRedirect");
-	    			dispatcher.forward(request,response);
-		    } catch (IOException e) {
+	    			//RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/AuthenticateHost?redirect=SpotifyRedirect");
+	    			//dispatcher.forward(request,response);
+	    			response.setStatus(response.SC_MOVED_TEMPORARILY);
+	    			response.setHeader("Location", StringConstants.URI + "/RoomCodes.jsp");    
+		    /*} catch (IOException e) {
 			// TODO Auto-generated catch block
 				e.printStackTrace();
 		    } catch (ServletException e) {
 			// TODO Auto-generated catch block
-		    		e.printStackTrace();
-		}
+		    		e.printStackTrace(); */
+		 //   } 
 		  }
 
 		  @Override

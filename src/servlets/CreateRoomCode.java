@@ -3,6 +3,7 @@ package servlets;
 import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,7 +38,7 @@ public class CreateRoomCode extends HttpServlet {
 		String owner = (String) request.getParameter("owner");
 		String playlistName = (String) request.getParameter("playlistName");
 		boolean roomCodeExists = true;
-		String roomCode = "";
+		String roomCode = generateRandomRoomCode();
 		Database db = new Database();
 		while (roomCodeExists) {
 			roomCodeExists = db.roomCodeExists(roomCode);
@@ -47,8 +48,6 @@ public class CreateRoomCode extends HttpServlet {
 				roomCode = generateRandomRoomCode();
 			}
 		}
-		db.createRoomCode(roomCode, playlistName, owner);
-		db.close();
 		Api api = (Api) request.getSession().getAttribute("api");
 		String userId = 	"";	
 		try {
@@ -62,9 +61,12 @@ public class CreateRoomCode extends HttpServlet {
 
 		try {
 		  final Playlist playlist = pcr.get();
-		  
+		  db.createRoomCode(roomCode, playlist.getId(), owner);
+		  db.close();
 		  System.out.println("You just created this playlist!");
 		  System.out.println("Its title is " + playlist.getName());
+		  RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/RoomCodes.jsp");
+		  dispatcher.forward(request,response);
 		} catch (Exception e) {
 		   System.out.println("Something went wrong!" + e.getMessage());
 		}

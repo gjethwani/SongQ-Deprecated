@@ -26,7 +26,7 @@
 				}
 			};
 			var path = "/"+window.location.pathname.split("/")[1];
-			xhttp.open("GET", path + "/ApproveRejectRequest?requestId=" + requestId + "&approvedRejected=" + approvedRejected + "&songId=" + songId, true);
+			xhttp.open("GET", path + "/ApproveRejectRequest?requestId=" + requestId + "&approvedRejected=" + approvedRejected + "&songId=" + songId + "&roomCode=" + "<%= roomCode %>", true);
 			xhttp.send();
 		}
 

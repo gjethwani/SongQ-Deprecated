@@ -29,10 +29,10 @@ public class ApproveRejectRequest extends HttpServlet {
 		Integer requestId = Integer.parseInt((String)request.getParameter("requestId"));
 		String approvedRejected = (String) request.getParameter("approvedRejected");
 		String songId = (String) request.getParameter("songId");
+		String roomCode = (String) request.getParameter("roomCode");
 		songId = "spotify:track:" + songId;
 		Database db = new Database(); 
 		db.requestServiced(requestId, approvedRejected); 
-		db.close();
 		Api api = (Api) request.getSession().getAttribute("api");
 		String userId = "";
 		try {
@@ -40,18 +40,8 @@ public class ApproveRejectRequest extends HttpServlet {
 		} catch (WebApiException wae) {
 			wae.printStackTrace();
 		}
-		final UserPlaylistsRequest playlistRequest = api.getPlaylistsForUser(userId).build();
-		String playlistId = "";
-		try {
-		   final Page<SimplePlaylist> playlistsPage = playlistRequest.get();
-		   for (SimplePlaylist playlist : playlistsPage.getItems()) {
-			      if (playlist.getName().equals("API Test")) {
-			    	  	  playlistId = playlist.getId();
-			      }
-			   }
-		} catch (Exception e) {
-		   System.out.println("Something went wrong!" + e.getMessage());
-		}
+		String playlistId = db.getPlaylistId(roomCode);
+		db.close();
 		final List<String> tracksToAdd = new ArrayList<String>();
 		tracksToAdd.add(songId);
 		final AddTrackToPlaylistRequest addRequest = api.addTracksToPlaylist(userId, playlistId, tracksToAdd)
