@@ -39,13 +39,13 @@
 		<%	}
 		} %>
 		function createRoomCode() {
+			var path = "<%= StringConstants.URI %>"
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					window.location.href = path + "/RoomCodes.jsp";
 				}
 			};
-			var path = "/"+window.location.pathname.split("/")[1];
 			xhttp.open("GET", path + "/CreateRoomCode?&owner=" + '<%= username %>' + "&playlistName=" + document.getElementById("playlistName").value, true);
 			xhttp.send();
 		}

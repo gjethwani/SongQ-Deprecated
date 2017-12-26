@@ -23,17 +23,17 @@ public class AuthenticateGuest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String roomCode = request.getParameter(StringConstants.ROOM_CODE);
-		request.setAttribute(StringConstants.ROOM_CODE, roomCode);
+		request.getSession().setAttribute(StringConstants.ROOM_CODE, roomCode);
 		Database db = new Database();
 		boolean roomCodePassed = db.authenticateRoomCode(roomCode);
 		db.close();
 		request.setAttribute("roomCodePassed", roomCodePassed);
 		if (roomCodePassed) {
-			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/RequestSong.jsp");
-			dispatcher.forward(request,response);
+			response.setStatus(response.SC_MOVED_TEMPORARILY);
+			response.setHeader("Location", StringConstants.URI + "/RequestSong.jsp");
 		} else {
-			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GuestLogin.jsp");
-			dispatcher.forward(request,response);
+			response.setStatus(response.SC_MOVED_TEMPORARILY);
+			response.setHeader("Location", StringConstants.URI + "/GuestLogin.jsp");
 		}
 	}
 }

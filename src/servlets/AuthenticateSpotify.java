@@ -26,7 +26,6 @@ public class AuthenticateSpotify extends HttpServlet {
 				  .clientSecret(StringConstants.CLIENT_SECRET)
 				  .redirectURI(StringConstants.URI + "/AuthenticateSpotifyRedirect")
 				  .build();
-				
 		/* Set the necessary scopes that the application will need from the user */
 		final List<String> scopes = Arrays.asList("playlist-modify-public", "playlist-modify-private", "streaming");
 		

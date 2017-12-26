@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		<a href="HostRegister.jsp">Don't have an account? Register here</a>
-		<form action = "<%= StringConstants.AUTHENTICATE_HOST %>">
+		<form action = "<%= StringConstants.AUTHENTICATE_HOST %>" method="POST">
 			Username: <input type="text" name="<%= StringConstants.USERNAME %>"> <br>
 			Password: <input type="password" name="<%= StringConstants.PASSWORD %>"> <br>
 			<input type="submit">

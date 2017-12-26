@@ -26,7 +26,6 @@ public class AuthenticateSpotifyRedirect extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		/* Application details necessary to get an access token */
 		final String code = request.getParameter("code");
-		System.out.println("code " + code);
 		final Api api = Api.builder()
 				  .clientId(StringConstants.CLIENT_ID)
 				  .clientSecret(StringConstants.CLIENT_SECRET)

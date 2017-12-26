@@ -27,9 +27,9 @@
 						
 					}
 				};
-				var path = "/"+window.location.pathname.split("/")[1];
+				var path = "<%= StringConstants.URI %>";
 				<% Database db = new Database(); 
-				   String roomCode = (String) request.getAttribute(StringConstants.ROOM_CODE);
+				   String roomCode = (String) request.getSession().getAttribute(StringConstants.ROOM_CODE);
 				   String owner = db.getOwner(roomCode); 
 				   db.close(); %>
 				xhttp.open("GET", path + "/AddRequest?roomCode=" + '<%= roomCode %>' + "&owner=" + '<%= owner %>' + "&songId=" + id + "&songName=" + name + "&artists=" + artists + "&album=" + album, true);
@@ -95,7 +95,8 @@
 				   		}
 					}
 				};
-				var path = "/"+window.location.pathname.split("/")[1];
+				//var path = "/"+window.location.pathname.split("/")[1];
+				var path = "<%= StringConstants.URI %>";
 				xhttp.open("GET", path + "/SearchTracks?query=" + document.getElementById("trackSearch").value, true);
 				xhttp.send();
 			}
