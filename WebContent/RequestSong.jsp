@@ -13,6 +13,8 @@
 			Search for tracks: <input type="text" name="trackSearch" id="trackSearch">
 			<input type="submit">
 		</form>
+		<p id = "loading"></p>
+		<p id = "message" style = "color: red;"></p>
 		<table id = "resultsTable">
 		</table>
 	</body>
@@ -24,7 +26,10 @@
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
-						
+						var clickedButton = document.getElementById(id);
+						clickedButton.style.display = "none";
+						var requestedText = document.getElementById("requested" + id);
+						requestedText.style.display = "block";
 					}
 				};
 				var path = "<%= StringConstants.URI %>";
@@ -37,6 +42,8 @@
 			}
 
 			var form = document.getElementById("tracksForm").onsubmit = function(event) {
+				document.getElementById("loading").innerHTML = "Loading...";
+				document.getElementById("message").innerHTML = "";
 				var ids = [];
 				var names = [];
 				var albums = [];
@@ -45,9 +52,13 @@
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
+						document.getElementById("loading").innerHTML = "";
 						document.getElementById("resultsTable").innerHTML = "";
 				   		var response = this.response;
 				   		var individualTracks = response.split(";");
+				   		if (individualTracks.length === 0 || individualTracks == null) {
+				   			document.getElementById("message").innerHTML = "No Results";
+				   		}
 				   		for (var i = 0; i < individualTracks.length-1; i++) {
 				   			var song = individualTracks[i].split(",");
 				   			var id = song[0];
@@ -86,13 +97,20 @@
 				   			});
 				   			button.value = "Request " + name;
 				   			button.classList.add(i);
+				   			var requestedText = document.createElement("p");
+				   			requestedText.innerHTML = "Requested!";
+				   			requestedText.id = "requested" + id;
+				   			requestedText.style.display = "none";
 				   			var tableCell = document.createElement("tr");
 				   			tableCell.appendChild(nameTag);
 				   			tableCell.appendChild(artistTag);
 				   			tableCell.appendChild(albumTag);
 				   			tableCell.appendChild(button);
+				   			tableCell.appendChild(requestedText);
 				   			document.getElementById("resultsTable").appendChild(tableCell);
 				   		}
+					} else if (this.readyState == 4 && this.status != 200) {
+						document.getElementById("message").innerHTML = "Error";
 					}
 				};
 				//var path = "/"+window.location.pathname.split("/")[1];

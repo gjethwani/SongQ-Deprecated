@@ -7,20 +7,29 @@
 		<title>SongQ</title>
 	</head>
 	<body>
-		<form action="VerifyHostRegistration">
+		<form action="VerifyHostRegistration" method="POST">
 			First Name: <input type="text" name="firstName"> <br>
 			Last Name: <input type="text" name="lastName"> <br>
 			Username: <input type="text" name="username"> <br>
 			Password: <input type="password" name="password"> <br>
 			Confirm Password: <input type="password" name="confirmPassword"> <br>
-			<input type="submit">
+			<input type="submit" onclick="return loading();">
 		</form>
+		<div id="loading"></div>
 		<p style="color: red;" id="message"></p>
+		<script>
+	 		function loading() {
+				document.getElementById("loading").innerHTML = "Loading..."; 
+			}
+ 		</script>
 		<% String message = (String) request.getAttribute("registrationMessage"); 
 		   if (message == null) { %> 
-		   		<script>console.log("1");document.getElementById("message").innerHTML = "";</script>
+		   		<script>document.getElementById("message").innerHTML = "";</script>
 		   <% } else { %>
-		   		<script>console.log("2");document.getElementById("message").innerHTML = "<%= message %>";</script>
+		   		<script>		
+		   			document.getElementById("loading").innerHTML = "";
+		   			document.getElementById("message").innerHTML = "<%= message %>";
+		   		</script>
 		   <% } %>
 	</body>
 </html>

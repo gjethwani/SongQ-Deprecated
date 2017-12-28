@@ -231,4 +231,21 @@ public class Database {
 		}
 		return "null";
 	}
+	
+	public boolean usernameExists(String username) {
+		String query = String.format("SELECT * FROM %s WHERE username='%s'", "Users", username);
+		try {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			if (!rs.isBeforeFirst() ) { 
+				return false; //no user
+			} else {
+				return true;
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			return true;
+		}
+	}
 }

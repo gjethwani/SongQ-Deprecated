@@ -12,14 +12,23 @@
 		<form action = "<%= StringConstants.AUTHENTICATE_HOST %>" method="POST">
 			Username: <input type="text" name="<%= StringConstants.USERNAME %>"> <br>
 			Password: <input type="password" name="<%= StringConstants.PASSWORD %>"> <br>
-			<input type="submit">
+			<input type="submit" onclick="return loading();">
  		</form>
+ 		<div id="loading"></div>
  		<p style="color: red;" id="message"></p>
+ 		<script>
+	 		function loading() {
+				document.getElementById("loading").innerHTML = "Loading..."; 
+			}
+ 		</script>
 		<% String message = (String) request.getAttribute("hostLoginMessage"); 
 		   if (message == null) { %> 
-		   		<script>console.log("1");document.getElementById("message").innerHTML = "";</script>
+		   		<script>document.getElementById("message").innerHTML = "";</script>
 		   <% } else { %>
-		   		<script>console.log("2");document.getElementById("message").innerHTML = "<%= message %>";</script>
+		   		<script>
+		   			document.getElementById("loading").innerHTML = "";
+		   			document.getElementById("message").innerHTML = "<%= message %>";
+		   		</script>
 		   <% } %>
 	</body>
 </html>

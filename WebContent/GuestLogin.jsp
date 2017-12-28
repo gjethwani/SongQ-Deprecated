@@ -10,7 +10,20 @@
 	<body>
 		<form action="<%= StringConstants.AUTHENTICATE_GUEST %>">
 			Enter room code: <input type="text" name="<%= StringConstants.ROOM_CODE %>"> <br>
-			<input type="submit">
+			<input type="submit" onclick="return loading();">
 		</form>
+		<div id="loading"></div>
+		<div id="message" style="color: red"></div>
 	</body>
+	<script>
+		function loading() {
+			document.getElementById("loading").innerHTML = "Loading..."; 
+		}
+		<% String message = (String) request.getAttribute("message"); 
+		if (message == null) { %>
+			document.getElementById("message").innerHTML = "";
+		<% } else { %>
+			document.getElementById("message").innerHTML = "<%= message %>";
+		<% } %>
+	</script>
 </html>

@@ -40,13 +40,22 @@ public class VerifyHostRegistration extends HttpServlet {
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/HostRegister.jsp");
 			dispatcher.forward(request,response);
 		}
+		Database db = new Database();
+		boolean usernameExists = db.usernameExists(username);
+		if (usernameExists) {
+			invalid = true;
+			registrationMessage = "User already exists";
+			request.setAttribute("registrationMessage", registrationMessage);
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/HostRegister.jsp");
+			dispatcher.forward(request,response);
+		}
 		if (!invalid) {
-			Database db = new Database();
+			request.getSession().setAttribute("username", username);
 			db.registerUser(firstName, lastName, username, password);
 			db.close();
 			registrationMessage = "";
 			request.setAttribute("registrationMessage", registrationMessage);
-			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/AuthenticateSpotify");
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/AuthenticateSpotify?newUser=true");
 			dispatcher.forward(request,response);
 		}
 	}

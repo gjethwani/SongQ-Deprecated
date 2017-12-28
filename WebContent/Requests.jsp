@@ -2,7 +2,8 @@
     pageEncoding="UTF-8"
     import = "database.Database" 
     import = "java.util.List" 
-    import = "objects.Request" %>
+    import = "objects.Request" 
+    import = "constants.StringConstants" %>
 <%	Database db = new Database();
 	String roomCode = (String) request.getParameter("roomCode");
 	List<Request> outstandingRequests = db.getOutstandingRequests(roomCode);
@@ -25,7 +26,7 @@
 					
 				}
 			};
-			var path = "/"+window.location.pathname.split("/")[1];
+			var path = "<%= StringConstants.URI %>";
 			xhttp.open("GET", path + "/ApproveRejectRequest?requestId=" + requestId + "&approvedRejected=" + approvedRejected + "&songId=" + songId + "&roomCode=" + "<%= roomCode %>", true);
 			xhttp.send();
 		}
@@ -34,7 +35,7 @@
 		<% for (int i = 0; i < outstandingRequests.size(); i++) { //http://codippa.com/how-to-iterate-over-list-of-objects-jstl/
 			Request currRequest = outstandingRequests.get(i); %>
 			var trRequest = document.createElement("tr");
-			var songNameText = document.createTextNode("Song: " + "<%= currRequest.getSongName() %>");
+			var songNameText = document.createTextNode("Song: " + "<%= currRequest.getSongName().replace((char)34,(char)39)); //replace " with ' %>"); 
 			var trSong = document.createElement("tr");
 			trSong.appendChild(songNameText);
 			var artistsText = document.createTextNode("Artists: " + "<%= String.join(", ", currRequest.getArtists()) %>");
@@ -46,14 +47,14 @@
 			var approveButton = document.createElement("input");
 			approveButton.type = "button";
 			//approveButton.id = <%= currRequest.getSongId() %>;
-			approveButton.value = "Accept " + "<%= currRequest.getSongName() %>";
+			approveButton.value = "Accept " + "<%= currRequest.getSongName().replace((char)34,(char)39)); //replace " with ' %>"; 
 			approveButton.addEventListener("click", function() {
    				approveRejectRequest(<%= currRequest.getRequestId() %>, "accepted", "<%= currRequest.getSongId() %>");
    			});
 			
 			var rejectButton = document.createElement("input");
 			rejectButton.type = "button";
-			rejectButton.value = "Reject " + "<%= currRequest.getSongName() %>";
+			rejectButton.value = "Reject " + "<%= currRequest.getSongName().replace((char)34,(char)39)); //replace " with ' %>";
 			rejectButton.addEventListener("click", function() {
    				approveRejectRequest(<%= currRequest.getRequestId() %>, "rejected", "<%= currRequest.getSongId() %>");
    			});
