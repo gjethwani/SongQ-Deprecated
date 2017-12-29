@@ -42,6 +42,7 @@ public class VerifyHostRegistration extends HttpServlet {
 		}
 		Database db = new Database();
 		boolean usernameExists = db.usernameExists(username);
+		db.close();
 		if (usernameExists) {
 			invalid = true;
 			registrationMessage = "User already exists";
@@ -52,7 +53,8 @@ public class VerifyHostRegistration extends HttpServlet {
 		if (!invalid) {
 			request.getSession().setAttribute("username", username);
 			db.registerUser(firstName, lastName, username, password);
-			db.close();
+			String userInfo = firstName + "," + lastName + "," + username + "," + password;
+			request.getSession().setAttribute("userInfo", userInfo);
 			registrationMessage = "";
 			request.setAttribute("registrationMessage", registrationMessage);
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/AuthenticateSpotify?newUser=true");

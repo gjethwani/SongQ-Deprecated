@@ -34,7 +34,7 @@ public class AuthenticateSpotify extends HttpServlet {
 		
 		String authorizeURL = api.createAuthorizeURL(scopes, state);
 		String newUser = (String) request.getParameter("newUser");
-		if (newUser.equals("true")) {
+		if (newUser != null && newUser.equals("true")) {
 			authorizeURL += "&show_dialog=true";
 		}
 		response.sendRedirect(authorizeURL);

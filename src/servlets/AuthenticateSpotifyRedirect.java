@@ -16,6 +16,7 @@ import com.wrapper.spotify.Api;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
 
 import constants.StringConstants;
+import database.Database;
 
 /**
  * Servlet implementation class AuthenticateSpotifyRedirect
@@ -25,6 +26,12 @@ public class AuthenticateSpotifyRedirect extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		/* Application details necessary to get an access token */
+		String error = (String) request.getParameter("error");
+		if (error != null) {
+			 response.setStatus(response.SC_MOVED_TEMPORARILY);
+ 			 response.setHeader("Location", StringConstants.URI + "/HostLogin.jsp");   
+ 			 return;
+		}
 		final String code = request.getParameter("code");
 		final Api api = Api.builder()
 				  .clientId(StringConstants.CLIENT_ID)
@@ -45,7 +52,10 @@ public class AuthenticateSpotifyRedirect extends HttpServlet {
 		    System.out.println("Successfully retrieved an access token! " + authorizationCodeCredentials.getAccessToken());
 		    System.out.println("The access token expires in " + authorizationCodeCredentials.getExpiresIn() + " seconds");
 		    System.out.println("Luckily, I can refresh it using this refresh token! " +     authorizationCodeCredentials.getRefreshToken());
-		  
+		    String [] userInfo = ((String) request.getSession().getAttribute("userInfo")).split(",");
+		    Database db = new Database();
+		    db.registerUser(userInfo[0], userInfo[1], userInfo[2], userInfo[3]);
+		    db.close();
 		    /* Set the access token and refresh token so that they are used whenever needed */
 		    api.setAccessToken(authorizationCodeCredentials.getAccessToken());
 		    api.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
@@ -71,6 +81,8 @@ public class AuthenticateSpotifyRedirect extends HttpServlet {
 			  System.out.println("failure");
 			  throwable.printStackTrace();
 			  System.out.println(throwable.getMessage());
+			  response.setStatus(response.SC_MOVED_TEMPORARILY);
+  			  response.setHeader("Location", StringConstants.URI + "/HostLogin.jsp");   
 		  }
 		});
 	}
