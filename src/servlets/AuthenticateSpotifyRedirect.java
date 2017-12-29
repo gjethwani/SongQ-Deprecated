@@ -52,10 +52,13 @@ public class AuthenticateSpotifyRedirect extends HttpServlet {
 		    System.out.println("Successfully retrieved an access token! " + authorizationCodeCredentials.getAccessToken());
 		    System.out.println("The access token expires in " + authorizationCodeCredentials.getExpiresIn() + " seconds");
 		    System.out.println("Luckily, I can refresh it using this refresh token! " +     authorizationCodeCredentials.getRefreshToken());
-		    String [] userInfo = ((String) request.getSession().getAttribute("userInfo")).split(",");
-		    Database db = new Database();
-		    db.registerUser(userInfo[0], userInfo[1], userInfo[2], userInfo[3]);
-		    db.close();
+		    String userInfoString = (String) request.getSession().getAttribute("userInfo");
+		    if (userInfoString != null) {
+	    			String [] userInfo = userInfoString.split(","); //CHECK FOR NULL
+	    			Database db = new Database();
+	    			db.registerUser(userInfo[0], userInfo[1], userInfo[2], userInfo[3]);
+	    			db.close();
+		    }
 		    /* Set the access token and refresh token so that they are used whenever needed */
 		    api.setAccessToken(authorizationCodeCredentials.getAccessToken());
 		    api.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
