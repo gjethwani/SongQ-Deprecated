@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,7 +12,9 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.SettableFuture;
 import com.wrapper.spotify.Api;
+import com.wrapper.spotify.methods.CurrentUserRequest;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
+import com.wrapper.spotify.models.User;
 
 import constants.StringConstants;
 import database.Database;
@@ -49,19 +50,26 @@ public class AuthenticateSpotifyRedirect extends HttpServlet {
 		  @Override
 		  public void onSuccess(AuthorizationCodeCredentials authorizationCodeCredentials) {
 		    /* The tokens were retrieved successfully! */
+			api.setAccessToken(authorizationCodeCredentials.getAccessToken());
+			api.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
 		    System.out.println("Successfully retrieved an access token! " + authorizationCodeCredentials.getAccessToken());
 		    System.out.println("The access token expires in " + authorizationCodeCredentials.getExpiresIn() + " seconds");
 		    System.out.println("Luckily, I can refresh it using this refresh token! " +     authorizationCodeCredentials.getRefreshToken());
-		    String userInfoString = (String) request.getSession().getAttribute("userInfo");
-		    if (userInfoString != null) {
-	    			String [] userInfo = userInfoString.split(","); //CHECK FOR NULL
-	    			Database db = new Database();
-	    			db.registerUser(userInfo[0], userInfo[1], userInfo[2], userInfo[3]);
-	    			db.close();
-		    }
+		    //String userInfoString = (String) request.getSession().getAttribute("userInfo");
+		   // if (userInfoString != null) {
+	    			//String [] userInfo = userInfoString.split(","); //CHECK FOR NULL
+	    		Database db = new Database();
+	    		final CurrentUserRequest userRequest = api.getMe().build();
+	    		 try {
+	    		   final User user = userRequest.get();
+	    		   request.getSession().setAttribute("userId",user.getId());
+	    		   db.registerUser(user.getId(), user.getDisplayName());
+	    		} catch (Exception e) {
+	    		   e.printStackTrace();
+	    		}
+	    		db.close();
+		   // }
 		    /* Set the access token and refresh token so that they are used whenever needed */
-		    api.setAccessToken(authorizationCodeCredentials.getAccessToken());
-		    api.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
 		  //  try {
 	    			request.getSession().setAttribute("api",api);
 	    			//RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/AuthenticateHost?redirect=SpotifyRedirect");

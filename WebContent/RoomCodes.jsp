@@ -4,9 +4,9 @@
     import = "java.util.List"
     import = "constants.StringConstants"%>
 <% 
-   String username = (String) request.getSession().getAttribute("username");
+   String userId = (String) request.getSession().getAttribute("userId");
    Database db = new Database();
-   List<String> roomCodes = db.getRoomCodes(username);
+   List<String> roomCodes = db.getRoomCodes(userId);
    int roomCodesIndex = 0;%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -46,7 +46,7 @@
 					window.location.href = path + "/RoomCodes.jsp";
 				}
 			};
-			xhttp.open("GET", path + "/CreateRoomCode?&owner=" + '<%= username %>' + "&playlistName=" + document.getElementById("playlistName").value, true);
+			xhttp.open("GET", path + "/CreateRoomCode?&owner=" + '<%= userId %>' + "&playlistName=" + document.getElementById("playlistName").value, true);
 			xhttp.send();
 		}
 	</script>

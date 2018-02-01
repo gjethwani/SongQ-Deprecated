@@ -27,16 +27,16 @@ public class AuthenticateSpotify extends HttpServlet {
 				  .redirectURI(StringConstants.URI + "/AuthenticateSpotifyRedirect")
 				  .build();
 		/* Set the necessary scopes that the application will need from the user */
-		final List<String> scopes = Arrays.asList("playlist-modify-public", "playlist-modify-private", "streaming");
+		final List<String> scopes = Arrays.asList("playlist-modify-public", "playlist-modify-private", "streaming", "user-read-email", "user-read-private", "user-read-birthdate");
 		
 		/* Set a state. This is used to prevent cross site request forgeries. */
 		final String state = "";
 		
 		String authorizeURL = api.createAuthorizeURL(scopes, state);
-		String newUser = (String) request.getParameter("newUser");
-		if (newUser != null && newUser.equals("true")) {
+		/*String newUser = (String) request.getParameter("newUser");
+		if (newUser != null && newUser.equals("true")) {*/
 			authorizeURL += "&show_dialog=true";
-		}
+		//}
 		response.sendRedirect(authorizeURL);
 		/* Continue by sending the user to the authorizeURL, which will look something like
 		   https://accounts.spotify.com:443/authorize?client_id=5fe01282e44241328a84e7c5cc169165&response_type=code&redirect_uri=https://example.com/callback&scope=user-read-private%20user-read-email&state=some-state-of-my-choice

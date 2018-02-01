@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+
 import constants.StringConstants;
 import objects.Request;
 
@@ -171,15 +173,16 @@ public class Database {
 		}
 	}
 	
-	public void registerUser(String firstName, String lastName, String username, String password) {
-		String query = String.format("INSERT INTO Users VALUES (?,?,?,?)");
+	public void registerUser(String id, String username) {
+		String query = String.format("INSERT INTO Users VALUES (?,?)");
 		try {
 			PreparedStatement st = conn.prepareStatement(query);
-			st.setString(1, firstName);
-			st.setString(2, lastName);
-			st.setString(3, username);
-			st.setString(4, password);
+			st.setString(1, id);
+			st.setString(2, username);
 			st.executeUpdate();
+		}
+		catch (MySQLIntegrityConstraintViolationException e) {
+			System.out.println("User Exists");
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
@@ -230,22 +233,5 @@ public class Database {
 			e.printStackTrace();
 		}
 		return "null";
-	}
-	
-	public boolean usernameExists(String username) {
-		String query = String.format("SELECT * FROM %s WHERE username='%s'", "Users", username);
-		try {
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery(query);
-			if (!rs.isBeforeFirst() ) { 
-				return false; //no user
-			} else {
-				return true;
-			}
-		}
-		catch(SQLException e) {
-			e.printStackTrace();
-			return true;
-		}
 	}
 }
