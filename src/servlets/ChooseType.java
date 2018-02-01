@@ -24,7 +24,7 @@ public class ChooseType extends HttpServlet {
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/GuestLogin.jsp");
     			dispatcher.forward(request,response);
 		} else if (type.equals(StringConstants.FORM_HOST)) {
-			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/HostLogin.jsp");
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/AuthenticateSpotify");
 			dispatcher.forward(request,response);
 		}
 	}

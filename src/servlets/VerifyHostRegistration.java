@@ -41,18 +41,18 @@ public class VerifyHostRegistration extends HttpServlet {
 			dispatcher.forward(request,response);
 		}
 		Database db = new Database();
-		boolean usernameExists = db.usernameExists(username);
+	//	boolean usernameExists = db.usernameExists(username);
 		db.close();
-		if (usernameExists) {
+	/*	if (usernameExists) {
 			invalid = true;
 			registrationMessage = "User already exists";
 			request.setAttribute("registrationMessage", registrationMessage);
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/HostRegister.jsp");
 			dispatcher.forward(request,response);
-		}
+		}*/
 		if (!invalid) {
 			request.getSession().setAttribute("username", username);
-			db.registerUser(firstName, lastName, username, password);
+		//	db.registerUser(firstName, lastName, username, password);
 			String userInfo = firstName + "," + lastName + "," + username + "," + password;
 			request.getSession().setAttribute("userInfo", userInfo);
 			registrationMessage = "";
