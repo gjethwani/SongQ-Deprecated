@@ -8,7 +8,7 @@
 		<title>SongQ</title>
 	</head>
 	<body>
-		<h2>I am a...</h2>
+		<h2>I am a...</h2> 
 		<form action="ChooseType">
 			<input type="submit" name="<%= StringConstants.TYPE %>" value="Host">
 			<input type="submit" name="<%= StringConstants.TYPE %>"  value="Guest">
