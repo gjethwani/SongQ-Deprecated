@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+body {
+	margin: 0px;
+	padding: 0px;
+}
+
+#navBar {
+	background-color: #034f84;
+}
+
+#navBarTitle {
+	margin-left: 15px;
+	text-align: left;
+	float: left;
+	font-family: "Trebuchet MS";
+	color: white;
+}
+
+.clear {
+	clear: both;
+}
+
+#getStartedForm {
+	float: right;
+}
