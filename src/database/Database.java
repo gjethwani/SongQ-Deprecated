@@ -120,7 +120,7 @@ public class Database {
 	}
 	
 	public List<String> getRoomCodes(String username) {
-		String query = String.format("SELECT %s FROM %s WHERE owner='%s'","roomCode", "Playlists", username);
+		String query = String.format("SELECT %s FROM %s WHERE owner='%s' ORDER BY identifier ASC","roomCode", "Playlists", username);
 		List<String> roomCodes = new ArrayList<String>();
 		try {
 			Statement st = conn.createStatement();
@@ -190,7 +190,7 @@ public class Database {
 	}
 	
 	public void createRoomCode(String roomCode, String playlistId, String owner) {
-		String query = String.format("INSERT INTO Playlists VALUES (?,?,?)");
+		String query = String.format("INSERT INTO Playlists (roomCode, playlistId, owner) VALUES (?,?,?)");
 		try {
 			PreparedStatement st = conn.prepareStatement(query);
 			st.setString(1, roomCode);

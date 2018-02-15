@@ -36,7 +36,6 @@ public class CreateRoomCode extends HttpServlet {
        
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String owner = (String) request.getParameter("owner");
-		String playlistName = (String) request.getParameter("playlistName");
 		boolean roomCodeExists = true;
 		String roomCode = generateRandomRoomCode();
 		Database db = new Database();
@@ -55,20 +54,30 @@ public class CreateRoomCode extends HttpServlet {
 		} catch (WebApiException wae) {
 			wae.printStackTrace();
 		}
-		final PlaylistCreationRequest pcr = api.createPlaylist(userId, playlistName)
-		  .publicAccess(true)
-		  .build();
+		String playlistName = (String) request.getParameter("playlistName");
+		String playlistId = (String) request.getParameter("playlistId");
+		if (playlistName != null) {
+			final PlaylistCreationRequest pcr = api.createPlaylist(userId, playlistName)
+			  .publicAccess(true)
+			  .build();
 
-		try {
-		  final Playlist playlist = pcr.get();
-		  db.createRoomCode(roomCode, playlist.getId(), owner);
-		  db.close();
-		  System.out.println("You just created this playlist!");
-		  System.out.println("Its title is " + playlist.getName());
-		  RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/RoomCodes.jsp");
-		  dispatcher.forward(request,response);
-		} catch (Exception e) {
-		   System.out.println("Something went wrong!" + e.getMessage());
+			try {
+			  final Playlist playlist = pcr.get();
+			  db.createRoomCode(roomCode, playlist.getId(), owner);
+			  db.close();
+			  System.out.println("You just created this playlist!");
+			  System.out.println("Its title is " + playlist.getName());
+			  RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/RoomCodes.jsp");
+			  dispatcher.forward(request,response);
+			} catch (Exception e) {
+			   System.out.println("Something went wrong!" + e.getMessage());
+			}
+		} else if (playlistId != null) {
+			Database db1 = new Database();
+			db1.createRoomCode(roomCode, playlistId, owner);
+			db1.close();
+		} else {
+			System.out.println("Could not create room code");
 		}
 	}
 

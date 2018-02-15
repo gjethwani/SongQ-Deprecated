@@ -2,12 +2,15 @@
     pageEncoding="UTF-8"
     import = "database.Database"
     import = "java.util.List"
-    import = "constants.StringConstants"%>
+    import = "constants.StringConstants"
+    import = "java.util.Vector"
+    import = "com.wrapper.spotify.models.SimplePlaylist" %>
 <% 
    String userId = (String) request.getSession().getAttribute("userId");
    Database db = new Database();
    List<String> roomCodes = db.getRoomCodes(userId);
-   int roomCodesIndex = 0;%>
+   int roomCodesIndex = 0;
+   Vector<SimplePlaylist> playlists = (Vector<SimplePlaylist>) request.getSession().getAttribute("playlists");%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -16,9 +19,16 @@
 	</head>
 	<body>
 		<h2>Room Codes: </h1>
-		<div id = "roomCodes">
+		<div id = "roomCodes" style="margin-bottom: 20px">
 		</div>
-		<input type="text" name="Playlist Name" placeholder="Enter Playlist Name" id="playlistName">
+		<input id="newPlaylistButton" type="radio" name = "playlistSelection" value = "createPlaylist" onclick="return disable('playlistDropDown','playlistName');" checked><label>Create a playlist</label><br>
+		<input type="text" name="Playlist Name" placeholder="Enter Playlist Name" id="playlistName"><br>
+		<input id="oldPlaylistButton" type="radio" name = "playlistSelection" value = "choosePlaylist" onclick="return disable('playlistName','playlistDropDown');"><label>Choose an existing playlist</label><br>
+		<select name = "playlists" id = "playlistDropDown" disabled>
+			<% for (int i = 0; i < playlists.size(); i++) { %>
+				<option value="<%= playlists.get(i).getId() %>"><%= playlists.get(i).getName() %></option>	
+			<% } %>
+		</select><br>
 		<input style = "margin-top: 20px;" type="button" value="Create New Room Code" onclick="return createRoomCode();">
 	</body>
 	<script>
@@ -46,8 +56,18 @@
 					window.location.href = path + "/RoomCodes.jsp";
 				}
 			};
-			xhttp.open("GET", path + "/CreateRoomCode?&owner=" + '<%= userId %>' + "&playlistName=" + document.getElementById("playlistName").value, true);
+			if (document.getElementById("newPlaylistButton").checked) {
+				xhttp.open("GET", path + "/CreateRoomCode?&owner=" + '<%= userId %>' + "&playlistName=" + document.getElementById("playlistName").value, true);
+			} else if (document.getElementById("oldPlaylistButton").checked) {
+				var dropDown = document.getElementById("playlistDropDown");
+				xhttp.open("GET", path + "/CreateRoomCode?&owner=" + '<%= userId %>' + "&playlistId=" + dropDown.options[dropDown.selectedIndex].value, true);
+			}
 			xhttp.send();
+		}
+		
+		function disable(id1, id2) {
+			document.getElementById(id1).disabled = true;
+			document.getElementById(id2).disabled = false;
 		}
 	</script>
 </html>

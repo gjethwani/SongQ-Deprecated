@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +14,10 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.SettableFuture;
 import com.wrapper.spotify.Api;
 import com.wrapper.spotify.methods.CurrentUserRequest;
+import com.wrapper.spotify.methods.UserPlaylistsRequest;
 import com.wrapper.spotify.models.AuthorizationCodeCredentials;
+import com.wrapper.spotify.models.Page;
+import com.wrapper.spotify.models.SimplePlaylist;
 import com.wrapper.spotify.models.User;
 
 import constants.StringConstants;
@@ -25,6 +29,30 @@ import database.Database;
 @WebServlet("/AuthenticateSpotifyRedirect")
 public class AuthenticateSpotifyRedirect extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	protected Vector<SimplePlaylist> getPlaylists(Api api) {
+		final CurrentUserRequest userRequest = api.getMe().build();
+		Vector<SimplePlaylist> toReturn = new Vector<SimplePlaylist>();
+		 try {
+		   final User user = userRequest.get();
+		   final UserPlaylistsRequest request = api.getPlaylistsForUser(user.getId()).limit(50).build();
+			try {
+			   final Page<SimplePlaylist> playlistsPage = request.get();
+			   for (SimplePlaylist playlist : playlistsPage.getItems()) {
+				  if (playlist.getOwner().getId().equals(user.getId())) {
+					  toReturn.add(playlist);
+				  }
+			   }
+			} catch (Exception e) {
+			   System.out.println("Could not get playlists");
+			   e.printStackTrace();
+			}
+		} catch (Exception e) {
+		   e.printStackTrace();
+		}
+		return toReturn;
+	}
+	
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		/* Application details necessary to get an access token */
 		String error = (String) request.getParameter("error");
@@ -55,34 +83,20 @@ public class AuthenticateSpotifyRedirect extends HttpServlet {
 		    System.out.println("Successfully retrieved an access token! " + authorizationCodeCredentials.getAccessToken());
 		    System.out.println("The access token expires in " + authorizationCodeCredentials.getExpiresIn() + " seconds");
 		    System.out.println("Luckily, I can refresh it using this refresh token! " +     authorizationCodeCredentials.getRefreshToken());
-		    //String userInfoString = (String) request.getSession().getAttribute("userInfo");
-		   // if (userInfoString != null) {
-	    			//String [] userInfo = userInfoString.split(","); //CHECK FOR NULL
 	    		Database db = new Database();
 	    		final CurrentUserRequest userRequest = api.getMe().build();
 	    		 try {
 	    		   final User user = userRequest.get();
+	    		   request.getSession().setAttribute("playlists", getPlaylists(api));
 	    		   request.getSession().setAttribute("userId",user.getId());
 	    		   db.registerUser(user.getId(), user.getDisplayName());
 	    		} catch (Exception e) {
 	    		   e.printStackTrace();
 	    		}
 	    		db.close();
-		   // }
-		    /* Set the access token and refresh token so that they are used whenever needed */
-		  //  try {
-	    			request.getSession().setAttribute("api",api);
-	    			//RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/AuthenticateHost?redirect=SpotifyRedirect");
-	    			//dispatcher.forward(request,response);
-	    			response.setStatus(response.SC_MOVED_TEMPORARILY);
-	    			response.setHeader("Location", StringConstants.URI + "/RoomCodes.jsp");    
-		    /*} catch (IOException e) {
-			// TODO Auto-generated catch block
-				e.printStackTrace();
-		    } catch (ServletException e) {
-			// TODO Auto-generated catch block
-		    		e.printStackTrace(); */
-		 //   } 
+    			request.getSession().setAttribute("api",api);
+    			response.setStatus(response.SC_MOVED_TEMPORARILY);
+    			response.setHeader("Location", StringConstants.URI + "/RoomCodes.jsp");    
 		  }
 
 		  @Override
