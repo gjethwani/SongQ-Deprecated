@@ -35,12 +35,13 @@
 		var roomCodesDiv = document.getElementById("roomCodes");
 		var noOfRoomCodes = <%= roomCodes.size() %>;
 		<% if (roomCodes.size() == 0) { %>
-			console.log("here1");
 			roomCodesDiv.appendChild(document.createTextNode("No Room Codes"));
 		<% } else { 
 			for (int i = 0; i < roomCodes.size(); i++) { %>
 				var aRoomCodes = document.createElement("a");
-				aRoomCodes.href = "<%= StringConstants.URI %>/Requests.jsp?roomCode=" + "<%= roomCodes.get(roomCodesIndex) %>";
+				<% Database db1 = new Database(); %>
+				aRoomCodes.href = "<%= StringConstants.URI %>/Requests.jsp?roomCode=" + "<%= roomCodes.get(roomCodesIndex) %>" + "&playlistId=" + "<%= db.getPlaylistId(roomCodes.get(roomCodesIndex)) %>";
+				<% db1.close(); %>
 				var textRoomCodes = document.createTextNode("<%= roomCodes.get(roomCodesIndex) %>");
 				<% roomCodesIndex += 1; %>
 				aRoomCodes.appendChild(textRoomCodes);

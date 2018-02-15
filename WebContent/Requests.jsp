@@ -6,6 +6,8 @@
     import = "constants.StringConstants" %>
 <%	Database db = new Database();
 	String roomCode = (String) request.getParameter("roomCode");
+	String userId = (String) request.getSession().getAttribute("userId");
+	String playlistId = (String) request.getParameter("playlistId");
 	List<Request> outstandingRequests = db.getOutstandingRequests(roomCode);
 	db.close(); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -17,6 +19,7 @@
 	<body>
 		<table id="requests">
 		</table>
+		<iframe src="https://open.spotify.com/embed?uri=spotify:user:<%= userId %>:playlist:<%=  playlistId %>" width="300" height="380" frameborder="0" allowtransparency="true"></iframe>
 	</body>
 	<script>
 		function approveRejectRequest(requestId, approvedRejected, songId) {
