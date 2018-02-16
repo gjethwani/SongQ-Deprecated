@@ -21,15 +21,16 @@
 		<h2>Room Codes: </h1>
 		<div id = "roomCodes" style="margin-bottom: 20px">
 		</div>
-		<input id="newPlaylistButton" type="radio" name = "playlistSelection" value = "createPlaylist" onclick="return disable('playlistDropDown','playlistName');" checked><label>Create a playlist</label><br>
 		<input type="text" name="Playlist Name" placeholder="Enter Playlist Name" id="playlistName"><br>
-		<input id="oldPlaylistButton" type="radio" name = "playlistSelection" value = "choosePlaylist" onclick="return disable('playlistName','playlistDropDown');"><label>Choose an existing playlist</label><br>
+		<input id="newPlaylistButton" type="radio" name = "playlistSelection" value = "createPlaylist" onclick="return toggleEnableDisable('playlistDropDown');" checked><label>Create a playlist</label><br>
+		<input id="oldPlaylistButton" type="radio" name = "playlistSelection" value = "choosePlaylist" onclick="return toggleEnableDisable('playlistDropDown');"><label>Choose an existing playlist</label><br>
 		<select name = "playlists" id = "playlistDropDown" disabled>
 			<% for (int i = 0; i < playlists.size(); i++) { %>
 				<option value="<%= playlists.get(i).getId() %>"><%= playlists.get(i).getName() %></option>	
 			<% } %>
 		</select><br>
-		<input style = "margin-top: 20px;" type="button" value="Create New Room Code" onclick="return createRoomCode();">
+		<input id="locationCheckBox" type="checkbox" name="location" value="enableLocation"><label>Use location services?</label><br> 
+		<input id="submitButton" style = "margin-top: 20px;" type="button" value="Create New Room Code">
 	</body>
 	<script>
 		var roomCodesDiv = document.getElementById("roomCodes");
@@ -49,26 +50,53 @@
 				roomCodesDiv.appendChild(document.createElement("br"));
 		<%	}
 		} %>
-		function createRoomCode() {
+		
+		document.getElementById("submitButton").onclick = function(event) {
 			var path = "<%= StringConstants.URI %>"
+			event.preventDefault();
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 				if (this.readyState == 4 && this.status == 200) {
 					window.location.href = path + "/RoomCodes.jsp";
 				}
 			};
+			var locationChecked = document.getElementById("locationCheckBox").checked;
+			console.log(locationChecked);
+			//console.log(document.getElementById("locationCheckBox"));
+			var url;
 			if (document.getElementById("newPlaylistButton").checked) {
-				xhttp.open("GET", path + "/CreateRoomCode?&owner=" + '<%= userId %>' + "&playlistName=" + document.getElementById("playlistName").value, true);
+				url = path + "/CreateRoomCode?&owner=" + "<%= userId %>" + "&playlistName=" + document.getElementById("playlistName").value;
 			} else if (document.getElementById("oldPlaylistButton").checked) {
 				var dropDown = document.getElementById("playlistDropDown");
-				xhttp.open("GET", path + "/CreateRoomCode?&owner=" + '<%= userId %>' + "&playlistId=" + dropDown.options[dropDown.selectedIndex].value, true);
+				url =  path + "/CreateRoomCode?&owner=" + '<%= userId %>' + "&playlistId=" + dropDown.options[dropDown.selectedIndex].value;
 			}
-			xhttp.send();
+			if (locationChecked == true) {
+				if ("geolocation" in navigator) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						console.log(position);
+						url += "&latitude=";
+						url += position.coords.latitude;
+						url += "&longitude=";
+						url += position.coords.longitude;
+						console.log(url);
+						xhttp.open("GET", url , true);
+						xhttp.send();	
+					});
+				} else {
+					 console.log("Location unavailable");
+				}
+			}
+			//console.log("here " + url);
 		}
+
 		
-		function disable(id1, id2) {
-			document.getElementById(id1).disabled = true;
-			document.getElementById(id2).disabled = false;
+		function toggleEnableDisable(id) {
+			var element = document.getElementById(id);
+			if (element.disabled === true) {
+				element.disabled = false;
+			} else {
+				element.disabled = true;
+			}
 		}
 	</script>
 </html>
