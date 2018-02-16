@@ -29,8 +29,9 @@ public class AuthenticateGuest extends HttpServlet {
 		db.close();
 		request.setAttribute("roomCodePassed", roomCodePassed);
 		if (roomCodePassed) {
-			response.setStatus(response.SC_MOVED_TEMPORARILY);
-			response.setHeader("Location", StringConstants.URI + "/RequestSong.jsp");
+			//response.setStatus(response.SC_MOVED_TEMPORARILY);
+			//response.setHeader("Location", StringConstants.URI + "/RequestSong.jsp");
+			getServletContext().getRequestDispatcher("/RequestSong.jsp").forward(request, response);
 		} else {
 			request.setAttribute("message", "Invalid room code");
 			getServletContext().getRequestDispatcher("/GuestLogin.jsp").forward(request, response);

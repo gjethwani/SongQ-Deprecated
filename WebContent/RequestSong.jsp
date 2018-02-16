@@ -116,6 +116,7 @@
 				//var path = "/"+window.location.pathname.split("/")[1];
 				var path = "<%= StringConstants.URI %>";
 				xhttp.open("GET", path + "/SearchTracks?query=" + document.getElementById("trackSearch").value, true);
+				xhttp.setRequestHeader('Access-Control-Allow-Origin','*');
 				xhttp.send();
 			}
 		</script>

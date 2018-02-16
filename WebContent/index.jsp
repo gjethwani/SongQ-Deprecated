@@ -14,4 +14,17 @@
 			<input type="submit" name="<%= StringConstants.TYPE %>"  value="Guest">
 		</form>
 	</body>
+	<script>
+		if ("geolocation" in navigator) {
+			console.log("yes");
+			navigator.geolocation.getCurrentPosition(function(position) {
+				console.log(position.coords);
+				  ;do_something(position.coords.latitude, position.coords.longitude);
+			});
+		  /* geolocation is available */
+		} else {
+			console.log("no");
+		  /* geolocation IS NOT available */
+		}
+	</script>
 </html>
