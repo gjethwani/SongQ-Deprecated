@@ -204,6 +204,22 @@ public class Database {
 		}
 	}
 	
+	public void createRoomCodeWithLocation(String roomCode, String playlistId, String owner, String latitude, String longitude) {
+		String query = String.format("INSERT INTO Playlists (roomCode, playlistId, owner, latitude, longitude) VALUES (?,?,?,?,?)");
+		try {
+			PreparedStatement st = conn.prepareStatement(query);
+			st.setString(1, roomCode);
+			st.setString(2, playlistId);
+			st.setString(3, owner);
+			st.setString(4, latitude);
+			st.setString(5, longitude);
+			st.executeUpdate();
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public boolean roomCodeExists(String roomCode) {
 		String query = String.format("SELECT * FROM %s WHERE roomCode='%s'", "Playlists", roomCode);
 		try {

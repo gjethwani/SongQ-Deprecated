@@ -12,6 +12,8 @@ identifier INT NOT NULL AUTO_INCREMENT,
 roomCode VARCHAR(50) NOT NULL,
 playlistId VARCHAR(100) NOT NULL,
 owner VARCHAR(50) NOT NULL,
+latitude VARCHAR(100),
+longitude VARCHAR(100),
 PRIMARY KEY(identifier),
 FOREIGN KEY(owner) REFERENCES Users(id));
 
