@@ -12,6 +12,7 @@ import java.util.List;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 import constants.StringConstants;
+import objects.Party;
 import objects.Request;
 
 public class Database {
@@ -250,5 +251,25 @@ public class Database {
 			e.printStackTrace();
 		}
 		return "null";
+	}
+	
+	public List<Party> getPartyLocations() {
+		String query = String.format("SELECT %s,%s,%s FROM %s", "latitude", "longitude", "roomCode", "Playlists");
+		List<Party> toReturn = new ArrayList<Party>();
+		try {
+			Statement st = conn.createStatement();
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				String latitude = rs.getString("latitude");
+				String longitude = rs.getString("longitude");
+				String roomCode = rs.getString("roomCode");
+				Party currParty = new Party(latitude, longitude, roomCode);
+				toReturn.add(currParty);
+			}
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return toReturn;
 	}
 }

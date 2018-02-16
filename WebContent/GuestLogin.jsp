@@ -10,12 +10,40 @@
 	<body>
 		<form action="<%= StringConstants.AUTHENTICATE_GUEST %>">
 			Enter room code: <input type="text" name="<%= StringConstants.ROOM_CODE %>"> <br>
+			<p>Or pick a party near you</p></br>
+			<select>
+			</select>
 			<input type="submit" onclick="return loading();">
 		</form>
 		<div id="loading"></div>
 		<div id="message" style="color: red"></div>
 	</body>
 	<script>
+	
+		window.onload = function() {
+			if ("geolocation" in navigator) {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						console.log(this.responseText);
+					}
+				};
+				var url = "<%= StringConstants.URI %>" + "/GetNearbyParties?"; 
+				navigator.geolocation.getCurrentPosition(function(position) {
+					console.log(position);
+					url += "latitude=";
+					url += position.coords.latitude;
+					url += "&longitude=";
+					url += position.coords.longitude;
+					console.log(url);
+					xhttp.open("GET", url , true);
+					xhttp.send();	
+				});
+			} else {
+				 console.log("Location unavailable");
+			}
+		}	
+	
 		function loading() {
 			document.getElementById("loading").innerHTML = "Loading..."; 
 		}
