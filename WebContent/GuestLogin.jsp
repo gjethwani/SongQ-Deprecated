@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"
-    import="constants.StringConstants"%>
+    import="constants.StringConstants"
+    import="objects.Party"
+    import="java.util.ArrayList"
+	import="java.util.List" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -11,7 +14,7 @@
 		<form action="<%= StringConstants.AUTHENTICATE_GUEST %>">
 			Enter room code: <input type="text" name="<%= StringConstants.ROOM_CODE %>"> <br>
 			<p>Or pick a party near you</p></br>
-			<select>
+			<select id="locationDropdown">
 			</select>
 			<input type="submit" onclick="return loading();">
 		</form>
@@ -25,7 +28,19 @@
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
-						console.log(this.responseText);
+						var locationDropdown = document.getElementById("locationDropdown");
+						<% if (request.getSession().getAttribute("approvedParties") != null) {
+							 List<Party> approvedParties = (List<Party>) request.getSession().getAttribute("approvedParties"); 
+							   for (int i = 0; i < approvedParties.size(); i++) { %>
+							   		var optionTag = document.createElement("option");
+							   		optionTag.value = <%= approvedParties.get(i).getRoomCode() %>;
+							   		optionTag.text = <%= approvedParties.get(i).getRoomCode() %>;
+							   		locationDropdown.appendChild(optionTag);
+						<%	   }
+						} %>
+						//} else { 
+						//	System.out.println("here");
+						//} %>
 					}
 				};
 				var url = "<%= StringConstants.URI %>" + "/GetNearbyParties?"; 

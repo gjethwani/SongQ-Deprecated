@@ -66,9 +66,9 @@ public class CreateRoomCode extends HttpServlet {
 			try {
 			  final Playlist playlist = pcr.get();
 			  if (longitude != null && latitude != null) {
-				  db.createRoomCodeWithLocation(roomCode, playlist.getId(), owner, latitude, longitude);
+				  db.createRoomCodeWithLocation(roomCode, playlist.getId(), owner, playlist.getName(), latitude, longitude);
 			  } else {
-				  db.createRoomCode(roomCode, playlist.getId(), owner);
+				  db.createRoomCode(roomCode, playlist.getId(), owner, playlist.getName());
 			  }
 			  db.close();
 			  System.out.println("You just created this playlist!");
@@ -79,11 +79,12 @@ public class CreateRoomCode extends HttpServlet {
 			   System.out.println("Something went wrong!" + e.getMessage());
 			}
 		} else if (playlistId != null) {
+			String existingPlaylistName = (String) request.getParameter("existingPlaylistName");
 			Database db1 = new Database();
 			if (longitude != null && latitude != null) {
-				db1.createRoomCodeWithLocation(roomCode, playlistId, owner, latitude, longitude);
+				db1.createRoomCodeWithLocation(roomCode, playlistId, owner, existingPlaylistName, latitude, longitude);
 			} else {
-				db1.createRoomCode(roomCode, playlistId, owner);
+				db1.createRoomCode(roomCode, playlistId, owner, existingPlaylistName);
 			}
 			db1.close();
 		} else {
