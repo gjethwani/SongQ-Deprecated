@@ -190,13 +190,14 @@ public class Database {
 		}
 	}
 	
-	public void createRoomCode(String roomCode, String playlistId, String owner) {
-		String query = String.format("INSERT INTO Playlists (roomCode, playlistId, owner) VALUES (?,?,?)");
+	public void createRoomCode(String roomCode, String playlistId, String owner, String name) {
+		String query = String.format("INSERT INTO Playlists (roomCode, playlistId, owner, playlistName) VALUES (?,?,?,?)");
 		try {
 			PreparedStatement st = conn.prepareStatement(query);
 			st.setString(1, roomCode);
 			st.setString(2, playlistId);
 			st.setString(3, owner);
+			st.setString(4, name);
 			st.executeUpdate();
 		}
 		catch(SQLException e) {
@@ -204,15 +205,16 @@ public class Database {
 		}
 	}
 	
-	public void createRoomCodeWithLocation(String roomCode, String playlistId, String owner, String latitude, String longitude) {
-		String query = String.format("INSERT INTO Playlists (roomCode, playlistId, owner, latitude, longitude) VALUES (?,?,?,?,?)");
+	public void createRoomCodeWithLocation(String roomCode, String playlistId, String owner, String name, String latitude, String longitude) {
+		String query = String.format("INSERT INTO Playlists (roomCode, playlistId, owner, playlistName, latitude, longitude) VALUES (?,?,?,?,?,?)");
 		try {
 			PreparedStatement st = conn.prepareStatement(query);
 			st.setString(1, roomCode);
 			st.setString(2, playlistId);
 			st.setString(3, owner);
-			st.setString(4, latitude);
-			st.setString(5, longitude);
+			st.setString(4, name);
+			st.setString(5, latitude);
+			st.setString(6, longitude);
 			st.executeUpdate();
 		}
 		catch(SQLException e) {
@@ -252,18 +254,22 @@ public class Database {
 		return "null";
 	}
 	
-	public List<Party> getPartyLocations() {
+	public List<Party> getPartyLocations(Float currLatitude, Float currLongitude) {
 		String query = String.format("SELECT %s,%s,%s FROM %s", "latitude", "longitude", "roomCode", "Playlists");
 		List<Party> toReturn = new ArrayList<Party>();
 		try {
 			Statement st = conn.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
-				String latitude = rs.getString("latitude");
-				String longitude = rs.getString("longitude");
+				String latitudeString = rs.getString("latitude");
+				String longitudeString = rs.getString("longitude");
 				String roomCode = rs.getString("roomCode");
-				Party currParty = new Party(latitude, longitude, roomCode);
-				toReturn.add(currParty);
+				Float latitude = (Float.valueOf(latitudeString)).floatValue();
+				Float longitude = (Float.valueOf(longitudeString)).floatValue();
+				if (Math.abs(latitude - currLatitude) <= 30 && Math.abs(longitude - currLongitude) <= 30) {
+					Party currParty = new Party(latitudeString, longitudeString, roomCode);
+					toReturn.add(currParty);
+				}
 			}
 		}
 		catch(SQLException e) {

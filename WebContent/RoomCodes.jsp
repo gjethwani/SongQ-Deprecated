@@ -68,7 +68,7 @@
 				url = path + "/CreateRoomCode?&owner=" + "<%= userId %>" + "&playlistName=" + document.getElementById("playlistName").value;
 			} else if (document.getElementById("oldPlaylistButton").checked) {
 				var dropDown = document.getElementById("playlistDropDown");
-				url =  path + "/CreateRoomCode?&owner=" + '<%= userId %>' + "&playlistId=" + dropDown.options[dropDown.selectedIndex].value;
+				url =  path + "/CreateRoomCode?&owner=" + '<%= userId %>' + "&playlistId=" + dropDown.options[dropDown.selectedIndex].value + "&existingPlaylistName=" + dropDown.options[dropDown.selectedIndex].text;
 			}
 			if (locationChecked == true) {
 				if ("geolocation" in navigator) {
