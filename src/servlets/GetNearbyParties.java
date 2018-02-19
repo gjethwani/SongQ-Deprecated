@@ -13,6 +13,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import constants.StringConstants;
 import database.Database;
 import objects.Party;
@@ -23,6 +27,26 @@ import objects.Party;
 @WebServlet("/GetNearbyParties")
 public class GetNearbyParties extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private static void getDestinations(String JSON) {
+		JSONParser parser = new JSONParser();
+		try {
+			
+			JSONObject obj = (JSONObject) parser.parse(JSON);
+			JSONArray rows = (JSONArray) obj.get("rows");
+			JSONObject elementsBuffer = (JSONObject) rows.get(0);
+			JSONArray elements = (JSONArray) elementsBuffer.get("elements");
+			JSONObject distanceBuffer = (JSONObject) elements.get(0);
+			System.out.println(distanceBuffer);
+			JSONObject distance = (JSONObject) distanceBuffer.get("distance");
+			System.out.println(distance);
+			long value = (long) distance.get("value");
+			System.out.println(value);
+			
+		} catch (org.json.simple.parser.ParseException pe) {
+			pe.printStackTrace();
+		}
+	}
 	
 	private static void getDistances(String currLocation, Party party) throws IOException {
 		String url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=";
@@ -50,7 +74,7 @@ public class GetNearbyParties extends HttpServlet {
 			in.close();
 
 			// print result
-			System.out.println(response.toString());
+			getDestinations(response.toString());
 		} else {
 			System.out.println("GET request not worked");
 		}

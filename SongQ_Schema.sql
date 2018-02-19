@@ -13,8 +13,8 @@ roomCode VARCHAR(50) NOT NULL,
 playlistId VARCHAR(100) NOT NULL,
 owner VARCHAR(50) NOT NULL,
 playlistName VARCHAR(50) NOT NULL,
-latitude VARCHAR(100),
-longitude VARCHAR(100),
+latitude DECIMAL(17,14),
+longitude DECIMAL(17,14),
 PRIMARY KEY(identifier),
 FOREIGN KEY(owner) REFERENCES Users(id));
 
