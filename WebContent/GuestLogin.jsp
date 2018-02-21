@@ -29,12 +29,14 @@
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
 						var locationDropdown = document.getElementById("locationDropdown");
+						console.log("hello");
 						<% if (request.getSession().getAttribute("approvedParties") != null) {
 							 List<Party> approvedParties = (List<Party>) request.getSession().getAttribute("approvedParties"); 
 							   for (int i = 0; i < approvedParties.size(); i++) { %>
 							   		var optionTag = document.createElement("option");
-							   		optionTag.value = <%= approvedParties.get(i).getRoomCode() %>;
-							   		optionTag.text = <%= approvedParties.get(i).getRoomCode() %>;
+							   		console.log("<%= approvedParties.get(i).getRoomCode() %>");
+							   		optionTag.value = "<%= approvedParties.get(i).getRoomCode() %>";
+							   		optionTag.text = "<%= approvedParties.get(i).getRoomCode() %>";
 							   		locationDropdown.appendChild(optionTag);
 						<%	   }
 						} %>

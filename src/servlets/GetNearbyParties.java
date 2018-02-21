@@ -37,12 +37,13 @@ public class GetNearbyParties extends HttpServlet {
 			JSONArray rows = (JSONArray) obj.get("rows");
 			JSONObject elementsBuffer = (JSONObject) rows.get(0);
 			JSONArray elements = (JSONArray) elementsBuffer.get("elements");
-			System.out.println("elements" + elements);
 			for (int i = 0; i < elements.size(); i++) {
 				JSONObject distanceBuffer = (JSONObject) elements.get(i);
 				JSONObject distance = (JSONObject) distanceBuffer.get("distance");
 				long value = (long) distance.get("value");
+				System.out.println(value);
 				if (value <= 50) {
+					System.out.println("here");
 					approvedDestinations.add(i);
 				}
 			}
@@ -85,6 +86,7 @@ public class GetNearbyParties extends HttpServlet {
 			List<Integer> approvedDestinations = getDestinations(response.toString());
 			List<Party> toReturn = new ArrayList<Party>();
 			for (int i = 0; i < approvedDestinations.size(); i++) {
+				System.out.println(parties.get(i).getRoomCode());
 				toReturn.add(parties.get(i));
 			}
 			return toReturn;
@@ -101,6 +103,7 @@ public class GetNearbyParties extends HttpServlet {
 		List<Party> partyLocations = db.getPartyLocations((Float.valueOf(currLatitude)).floatValue(),(Float.valueOf(currLongitude)).floatValue());
 		db.close();
 		List<Party> approvedParties = getDistances(currLatitude + "," + currLongitude, partyLocations);
+		System.out.println(approvedParties.size());
 		request.getSession().setAttribute("approvedParties", approvedParties);
 	}
 }
