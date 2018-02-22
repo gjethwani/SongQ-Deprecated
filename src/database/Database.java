@@ -205,7 +205,7 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void createRoomCodeWithLocation(String roomCode, String playlistId, String owner, String name, String latitude, String longitude) {
 		String query = String.format("INSERT INTO Playlists (roomCode, playlistId, owner, playlistName, latitude, longitude) VALUES (?,?,?,?,?,?)");
 		try {
