@@ -182,6 +182,7 @@ public class Database {
 			st.executeUpdate();
 		}
 		catch (MySQLIntegrityConstraintViolationException e) {
+			e.printStackTrace();
 			System.out.println("User Exists");
 		}
 		catch(SQLException e) {

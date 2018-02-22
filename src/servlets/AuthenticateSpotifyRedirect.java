@@ -68,11 +68,9 @@ public class AuthenticateSpotifyRedirect extends HttpServlet {
 				  //.redirectURI("http://localhost:8080/SongQ/AuthenticateHost?redirect=SpotifyRedirect")
 				  .redirectURI(StringConstants.URI + "/AuthenticateSpotifyRedirect")
 				  .build();
-
 		/* Make a token request. Asynchronous requests are made with the .getAsync method and synchronous requests
 		 * are made with the .get method. This holds for all type of requests. */
 		final SettableFuture<AuthorizationCodeCredentials> authorizationCodeCredentialsFuture = api.authorizationCodeGrant(code).build().getAsync();
-
 		/* Add callbacks to handle success and failure */
 		Futures.addCallback(authorizationCodeCredentialsFuture, new FutureCallback<AuthorizationCodeCredentials>() {
 		  @Override
@@ -83,13 +81,17 @@ public class AuthenticateSpotifyRedirect extends HttpServlet {
 		    System.out.println("Successfully retrieved an access token! " + authorizationCodeCredentials.getAccessToken());
 		    System.out.println("The access token expires in " + authorizationCodeCredentials.getExpiresIn() + " seconds");
 		    System.out.println("Luckily, I can refresh it using this refresh token! " +     authorizationCodeCredentials.getRefreshToken());
-	    		Database db = new Database();
+		    Database db = new Database();
 	    		final CurrentUserRequest userRequest = api.getMe().build();
 	    		 try {
 	    		   final User user = userRequest.get();
 	    		   request.getSession().setAttribute("playlists", getPlaylists(api));
 	    		   request.getSession().setAttribute("userId",user.getId());
-	    		   db.registerUser(user.getId(), user.getDisplayName());
+	    		   if (user.getDisplayName() == null) {
+	    			   db.registerUser(user.getId(), user.getEmail());
+	    		   } else {
+	    			   db.registerUser(user.getId(), user.getDisplayName());
+	    		   }
 	    		} catch (Exception e) {
 	    		   e.printStackTrace();
 	    		}
