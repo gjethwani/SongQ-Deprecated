@@ -4,10 +4,12 @@ public class Party {
 	private String latitude;
 	private String longitude;
 	private String roomCode;
-	public Party(String latitude, String longitude, String roomCode) {
+	private String partyName;
+	public Party(String latitude, String longitude, String roomCode, String partyName) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.roomCode = roomCode;
+		this.partyName = partyName;
 	}
 	public String getLatitude() {
 		return latitude;
@@ -26,5 +28,11 @@ public class Party {
 	}
 	public void setRoomCode(String roomCode) {
 		this.roomCode = roomCode;
+	}
+	public String getPartyName() {
+		return partyName;
+	}
+	public void setPartyName(String partyName) {
+		this.partyName = partyName;
 	}
 }

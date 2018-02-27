@@ -22,8 +22,8 @@
 		<div id = "roomCodes" style="margin-bottom: 20px">
 		</div>
 		<input type="text" name="Playlist Name" placeholder="Enter Playlist Name" id="playlistName"><br>
-		<input id="newPlaylistButton" type="radio" name = "playlistSelection" value = "createPlaylist" onclick="return toggleEnableDisable('playlistDropDown');" checked><label>Create a playlist</label><br>
-		<input id="oldPlaylistButton" type="radio" name = "playlistSelection" value = "choosePlaylist" onclick="return toggleEnableDisable('playlistDropDown');"><label>Choose an existing playlist</label><br>
+		<input id="newPlaylistButton" type="radio" name = "playlistSelection" value = "createPlaylist" onclick="return toggleEnableDisable('playlistDropDown', 'playlistName');" checked><label>Create a playlist</label><br>
+		<input id="oldPlaylistButton" type="radio" name = "playlistSelection" value = "choosePlaylist" onclick="return toggleEnableDisable('playlistDropDown', 'playlistName');"><label>Choose an existing playlist</label><br>
 		<select name = "playlists" id = "playlistDropDown" disabled>
 			<% for (int i = 0; i < playlists.size(); i++) { %>
 				<option value="<%= playlists.get(i).getId() %>"><%= playlists.get(i).getName() %></option>	
@@ -90,12 +90,15 @@
 		}
 
 		
-		function toggleEnableDisable(id) {
-			var element = document.getElementById(id);
-			if (element.disabled === true) {
-				element.disabled = false;
+		function toggleEnableDisable(id1, id2) {
+			var element1 = document.getElementById(id1);
+			var element2 = document.getElementById(id2);
+			if (element1.disabled === true) {
+				element1.disabled = false;
+				element2.disabled = true;
 			} else {
-				element.disabled = true;
+				element1.disabled = true;
+				element2.disabled = false;
 			}
 		}
 	</script>

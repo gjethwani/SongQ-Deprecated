@@ -12,9 +12,10 @@
 	</head>
 	<body>
 		<form action="<%= StringConstants.AUTHENTICATE_GUEST %>">
-			Enter room code: <input type="text" name="<%= StringConstants.ROOM_CODE %>"> <br>
-			<p>Or pick a party near you</p></br>
-			<select id="locationDropdown">
+			<input type="radio" name="methodSelection" value="roomCode" onclick="return toggleEnableDisable('roomCodeText', 'locationDropdown');" checked><label>Enter a room code</label><br>
+			Enter room code: <input type="text" name="<%= StringConstants.ROOM_CODE %>" id="roomCodeText"> <br>
+			<input type="radio" name="methodSelection" value="location" onclick="return toggleEnableDisable('roomCodeText', 'locationDropdown');"><label>Or pick a party near you</label></br>
+			<select id="locationDropdown" name="locationDropdown" disabled>
 			</select>
 			<input type="submit" onclick="return loading();">
 		</form>
@@ -34,9 +35,8 @@
 							 List<Party> approvedParties = (List<Party>) request.getSession().getAttribute("approvedParties"); 
 							   for (int i = 0; i < approvedParties.size(); i++) { %>
 							   		var optionTag = document.createElement("option");
-							   		console.log("<%= approvedParties.get(i).getRoomCode() %>");
 							   		optionTag.value = "<%= approvedParties.get(i).getRoomCode() %>";
-							   		optionTag.text = "<%= approvedParties.get(i).getRoomCode() %>";
+							   		optionTag.text = "<%= approvedParties.get(i).getPartyName() %>";
 							   		locationDropdown.appendChild(optionTag);
 						<%	   }
 						} %>
@@ -70,5 +70,17 @@
 		<% } else { %>
 			document.getElementById("message").innerHTML = "<%= message %>";
 		<% } %>
+		
+		function toggleEnableDisable(id1, id2) {
+			var element1 = document.getElementById(id1);
+			var element2 = document.getElementById(id2);
+			if (element1.disabled === true) {
+				element1.disabled = false;
+				element2.disabled = true;
+			} else {
+				element1.disabled = true;
+				element2.disabled = false;
+			}
+		}
 	</script>
 </html>

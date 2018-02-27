@@ -256,7 +256,7 @@ public class Database {
 	}
 	
 	public List<Party> getPartyLocations(Float currLatitude, Float currLongitude) {
-		String query = String.format("SELECT %s,%s,%s FROM %s", "latitude", "longitude", "roomCode", "Playlists");
+		String query = String.format("SELECT %s,%s,%s,%s FROM %s", "latitude", "longitude", "roomCode", "playlistName", "Playlists");
 		List<Party> toReturn = new ArrayList<Party>();
 		try {
 			Statement st = conn.createStatement();
@@ -265,10 +265,11 @@ public class Database {
 				String latitudeString = rs.getString("latitude");
 				String longitudeString = rs.getString("longitude");
 				String roomCode = rs.getString("roomCode");
+				String partyName = rs.getString("playlistName");
 				Float latitude = (Float.valueOf(latitudeString)).floatValue();
 				Float longitude = (Float.valueOf(longitudeString)).floatValue();
 				if (Math.abs(latitude - currLatitude) <= 30 && Math.abs(longitude - currLongitude) <= 30) {
-					Party currParty = new Party(latitudeString, longitudeString, roomCode);
+					Party currParty = new Party(latitudeString, longitudeString, roomCode, partyName);
 					toReturn.add(currParty);
 				}
 			}

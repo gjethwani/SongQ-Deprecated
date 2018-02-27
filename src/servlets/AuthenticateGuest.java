@@ -22,7 +22,14 @@ import spotify.Spotify;
 public class AuthenticateGuest extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String roomCode = request.getParameter(StringConstants.ROOM_CODE);
+		String roomCodeFromForm = request.getParameter(StringConstants.ROOM_CODE);
+		String roomCodeFromLocation = request.getParameter("locationDropdown");
+		String roomCode = "";
+		if (roomCodeFromForm != null) {
+			roomCode = roomCodeFromForm;
+		} else if (roomCodeFromLocation != null) {
+			roomCode = roomCodeFromLocation;
+		}
 		request.getSession().setAttribute(StringConstants.ROOM_CODE, roomCode);
 		Database db = new Database();
 		boolean roomCodePassed = db.authenticateRoomCode(roomCode);
