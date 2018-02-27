@@ -16,4 +16,5 @@ public class StringConstants {
 	//public static final String URI = "http://songq.io";
 	public static final String DB_CLOUD = "jdbc:mysql://songq-remote.cjizmy9yahnl.us-east-2.rds.amazonaws.com:3306/SongQ?user=gautam&password=damansara75&useSSL=false";
 	public static final String DB_LOCAL = "jdbc:mysql://localhost:3306/SongQ?user=root&password=damansara75&useSSL=false";
+	public static final String GOOGLE_API_KEY = "AIzaSyCsW6xaXYfBDeuyzfgkGcPtHYL55hvGLTg";
 }

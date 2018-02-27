@@ -36,6 +36,8 @@ public class CreateRoomCode extends HttpServlet {
        
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String owner = (String) request.getParameter("owner");
+		String latitude = (String) request.getParameter("latitude");
+		String longitude = (String) request.getParameter("longitude");
 		boolean roomCodeExists = true;
 		String roomCode = generateRandomRoomCode();
 		Database db = new Database();
@@ -63,7 +65,11 @@ public class CreateRoomCode extends HttpServlet {
 
 			try {
 			  final Playlist playlist = pcr.get();
-			  db.createRoomCode(roomCode, playlist.getId(), owner);
+			  if (longitude != null && latitude != null) {
+				  db.createRoomCodeWithLocation(roomCode, playlist.getId(), owner, playlist.getName(), latitude, longitude);
+			  } else {
+				  db.createRoomCode(roomCode, playlist.getId(), owner, playlist.getName());
+			  }
 			  db.close();
 			  System.out.println("You just created this playlist!");
 			  System.out.println("Its title is " + playlist.getName());
@@ -73,8 +79,13 @@ public class CreateRoomCode extends HttpServlet {
 			   System.out.println("Something went wrong!" + e.getMessage());
 			}
 		} else if (playlistId != null) {
+			String existingPlaylistName = (String) request.getParameter("existingPlaylistName");
 			Database db1 = new Database();
-			db1.createRoomCode(roomCode, playlistId, owner);
+			if (longitude != null && latitude != null) {
+				db1.createRoomCodeWithLocation(roomCode, playlistId, owner, existingPlaylistName, latitude, longitude);
+			} else {
+				db1.createRoomCode(roomCode, playlistId, owner, existingPlaylistName);
+			}
 			db1.close();
 		} else {
 			System.out.println("Could not create room code");
